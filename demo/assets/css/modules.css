@@ -1,0 +1,302 @@
+/* ============================================================
+   OPENTOP — MODULES
+   هر بخش از صفحه یک «ماژول» مستقله.
+   صفحه‌ی اصلی = چیدن این ماژول‌ها پشت سر هم.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   لودر ورودی — پرده‌ای که موقع باز شدن سایت کنار می‌ره
+   ------------------------------------------------------------ */
+.m-loader {
+  position: fixed; inset: 0; z-index: 200;
+  background: var(--black); color: var(--white);
+  display: grid; place-items: center;
+  transition: transform 1.1s var(--the-curve);
+}
+.m-loader__logo {
+  font-size: 28rem; font-weight: 300; letter-spacing: 0.3em;
+  opacity: 0; transform: translateY(14rem);
+  transition: opacity .7s ease, transform .9s var(--the-curve);
+}
+.m-loader.is-in .m-loader__logo { opacity: 1; transform: none; }
+.m-loader.is-out { transform: translateY(-100%); }
+.m-loader.is-done { display: none; }
+
+/* ------------------------------------------------------------
+   هدر — چسبان، موقع اسکرول به پایین مخفی می‌شه
+   ------------------------------------------------------------ */
+.m-header {
+  position: fixed; inset-inline: 0; top: 0; z-index: 100;
+  padding: 26rem 0;
+  background: rgba(255,255,255,0);
+  transition: transform .6s var(--the-curve),
+              background .4s ease,
+              padding .4s ease;
+}
+.m-header__in { display: flex; align-items: center; justify-content: space-between; gap: 40rem; }
+.m-header__logo { font-size: 22rem; font-weight: 400; letter-spacing: 0.22em; }
+.m-header__nav { display: flex; gap: 34rem; font-size: 15rem; }
+.m-header__tools { display: flex; gap: 22rem; font-size: 14rem; }
+
+/* حالت شناور روی هیرو (متن سفید) */
+.m-header--over { color: var(--white); }
+/* بعد از عبور از هیرو: پس‌زمینه سفید می‌شه */
+.m-header.is-stuck {
+  background: rgba(255,255,255,.94);
+  backdrop-filter: blur(14rem);
+  color: var(--black);
+  padding: 16rem 0;
+  box-shadow: 0 1px 0 rgba(0,0,0,.07);
+}
+/* اسکرول به پایین → مخفی */
+.m-header.is-hidden { transform: translateY(-104%); }
+
+@media (max-width: 960px) {
+  .m-header__nav, .m-header__tools { display: none; }
+}
+
+/* ------------------------------------------------------------
+   ماژول ۱ — هیرو
+   ------------------------------------------------------------ */
+.m-hero { position: relative; height: 100svh; min-height: 620rem; overflow: hidden; }
+.m-hero__media { position: absolute; inset: 0; }
+.m-hero::after {   /* گرادیان تیره برای خوانایی متن */
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(0,0,0,.42) 0%, rgba(0,0,0,.08) 42%, rgba(0,0,0,.55) 100%);
+}
+.m-hero__body {
+  position: absolute; inset-inline: 0; bottom: 96rem; z-index: 2;
+  color: var(--white);
+}
+.m-hero__title { max-width: 900rem; }
+.m-hero__sub { margin-top: 22rem; max-width: 440rem; opacity: .88; }
+
+.m-hero__scroll {
+  position: absolute; z-index: 2; bottom: 40rem; inset-inline-end: var(--gutter);
+  color: var(--white); font-size: 11rem; letter-spacing: .18em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 12rem;
+}
+.m-hero__scroll i {
+  display: block; width: 1px; height: 46rem; background: currentColor; opacity: .5;
+  position: relative; overflow: hidden;
+}
+.m-hero__scroll i::after {
+  content: ''; position: absolute; inset-inline: 0; top: 0; height: 40%;
+  background: var(--white); animation: scrollDot 2s var(--the-curve) infinite;
+}
+@keyframes scrollDot { 0% { transform: translateY(-100%);} 100% { transform: translateY(280%);} }
+
+@media (max-width: 960px) {
+  .m-hero { height: 88svh; min-height: 480rem; }
+  .m-hero__body { bottom: 60rem; }
+  .m-hero__scroll { display: none; }
+}
+
+/* ------------------------------------------------------------
+   ماژول ۲ — اسپات‌لایت (بیانیه‌ی برند، متن بزرگ)
+   ------------------------------------------------------------ */
+.m-spotlight { padding-block: var(--section-y); }
+.m-spotlight__eyebrow { margin-bottom: 40rem; }
+.m-spotlight__text { max-width: 1080rem; }
+.m-spotlight__meta {
+  display: flex; gap: 80rem; margin-top: 72rem; padding-top: 32rem;
+  border-top: 1px solid var(--light-grey);
+}
+.m-spotlight__meta b { display: block; font-size: 40rem; font-weight: 300; }
+.m-spotlight__meta span { color: var(--dark-grey); font-size: 13rem; }
+@media (max-width: 960px) { .m-spotlight__meta { gap: 34rem; flex-wrap: wrap; } .m-spotlight__meta b { font-size: 28rem; } }
+
+/* ------------------------------------------------------------
+   ماژول ۳ — کارت‌های پله‌ای (سخت‌ترین ماژول)
+   کارت‌ها با آفست عمودی چیده می‌شن و موقع اسکرول
+   با سرعت‌های متفاوت حرکت می‌کنن → عمق ایجاد می‌شه
+   ------------------------------------------------------------ */
+.m-stairs { padding-block: var(--section-y); background: var(--off-white); }
+.m-stairs__head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 40rem; margin-bottom: 72rem;
+}
+.m-stairs__grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 30rem;
+  align-items: start;
+}
+.m-stairs__card { will-change: transform; }
+/* آفست پله‌ای — همون چیزی که اسمش رو گذاشتن stairs */
+.m-stairs__card:nth-child(1) { margin-top: 0;      }
+.m-stairs__card:nth-child(2) { margin-top: 110rem; }
+.m-stairs__card:nth-child(3) { margin-top: 40rem;  }
+
+.m-stairs__media { aspect-ratio: 3 / 4; border-radius: 4rem; }
+.m-stairs__card:nth-child(2) .m-stairs__media { aspect-ratio: 3 / 3.4; }
+.m-stairs__info { display: flex; justify-content: space-between; gap: 16rem; margin-top: 20rem; }
+.m-stairs__num { color: var(--dark-grey); font-size: 12rem; letter-spacing: .1em; }
+
+@media (max-width: 960px) {
+  .m-stairs__grid { grid-template-columns: 1fr; gap: 44rem; }
+  .m-stairs__card { margin-top: 0 !important; }
+  .m-stairs__head { flex-direction: column; align-items: flex-start; gap: 20rem; }
+}
+
+/* ------------------------------------------------------------
+   ماژول ۴ — شوروم محصولات (گرید پراکنده با پارالاکس)
+   ------------------------------------------------------------ */
+.m-showroom { padding-block: var(--section-y); overflow: hidden; }
+.m-showroom__grid {
+  display: grid; grid-template-columns: repeat(12, 1fr);
+  gap: 30rem; align-items: center;
+}
+.m-showroom__text { grid-column: 1 / 5; }
+.m-showroom__a { grid-column: 5 / 9;  }
+.m-showroom__b { grid-column: 9 / 13; margin-top: 120rem; }
+.m-showroom__media { border-radius: 4rem; will-change: transform; }
+.m-showroom__a .m-showroom__media { aspect-ratio: 4 / 5; }
+.m-showroom__b .m-showroom__media { aspect-ratio: 3 / 4; }
+.m-showroom__cap { margin-top: 16rem; color: var(--dark-grey); font-size: 13rem; }
+
+@media (max-width: 960px) {
+  .m-showroom__grid { grid-template-columns: 1fr; gap: 34rem; }
+  .m-showroom__text, .m-showroom__a, .m-showroom__b { grid-column: 1 / -1; margin-top: 0; }
+}
+
+/* ------------------------------------------------------------
+   ماژول ۵ — متریال‌ها و رنگ‌ها
+   ------------------------------------------------------------ */
+.m-materials { padding-block: var(--section-y); background: var(--black); color: var(--white); }
+.m-materials__head { max-width: 620rem; margin-bottom: 64rem; }
+.m-materials__head .t-eyebrow { color: rgba(255,255,255,.5); }
+.m-materials__row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20rem; }
+.m-materials__sw { text-align: center; }
+.m-materials__chip {
+  aspect-ratio: 1; border-radius: 50%; margin-bottom: 16rem;
+  transform: scale(.4); opacity: 0;
+  transition: transform .9s var(--the-curve), opacity .6s ease;
+  transition-delay: calc(var(--i,0) * .07s);
+}
+.m-materials__sw.is-revealed .m-materials__chip { transform: scale(1); opacity: 1; }
+.m-materials__sw span { font-size: 12rem; color: rgba(255,255,255,.62); }
+@media (max-width: 960px) { .m-materials__row { grid-template-columns: repeat(3, 1fr); gap: 24rem; } }
+
+/* ------------------------------------------------------------
+   ماژول ۶ — بنر تمام‌عرض با پارالاکس
+   ------------------------------------------------------------ */
+.m-banner { position: relative; height: 78svh; min-height: 520rem; overflow: hidden; }
+.m-banner__media { position: absolute; inset: 0; }
+.m-banner::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgba(0,0,0,.5), rgba(0,0,0,.05));
+}
+.m-banner__body {
+  position: absolute; inset: 0; z-index: 2; display: flex; align-items: center;
+  color: var(--white);
+}
+.m-banner__inner { max-width: 560rem; }
+.m-banner__cta { margin-top: 30rem; display: inline-flex; align-items: center; gap: 12rem; font-size: 14rem; }
+
+/* ------------------------------------------------------------
+   فریم ۱ — کولاژ پراکنده
+   عکس‌ها با آفست‌های نامنظم روی هم می‌افتند و موقع اسکرول
+   هرکدام با سرعت متفاوتی حرکت می‌کنند → عمق سه‌بعدی
+   ------------------------------------------------------------ */
+.m-collage {
+  position: relative;
+  padding-block: var(--section-y);
+  overflow: hidden;
+}
+.m-collage__stage {
+  position: relative;
+  height: 1180rem;
+  max-width: 1440rem;
+  margin-inline: auto;
+}
+.m-collage__item { position: absolute; will-change: transform; }
+.m-collage__item .r-media { width: 100%; height: 100%; }
+
+/* چیدمان دقیق — مبنا: عرض ۱۴۴۰px (یعنی ۱rem = ۱px) */
+.m-collage__item--a { top:   0rem; inset-inline-start: 300rem; width: 268rem; height: 328rem; z-index: 2; }
+.m-collage__item--b { top:  95rem; inset-inline-start: 415rem; width: 258rem; height: 316rem; z-index: 4; }
+.m-collage__item--c { top: 175rem; inset-inline-start:  10rem; width: 335rem; height: 440rem; z-index: 3; }
+.m-collage__item--d { top: 415rem; inset-inline-start: 680rem; width: 236rem; height: 178rem; z-index: 2; }
+.m-collage__item--e { top: 605rem; inset-inline-start: 965rem; width: 205rem; height: 262rem; z-index: 1; }
+
+/* تیتری که از پشتِ بعضی عکس‌ها رد می‌شود — امضای این فریم.
+   z-index=3 یعنی فقط عکسِ b (که z-index=4 دارد) رویش می‌افتد؛
+   بقیه پشتش می‌مانند. اینطور تیتر خوانا می‌ماند ولی لایه‌بندی حس می‌شود. */
+.m-collage__title {
+  position: absolute; top: 690rem; inset-inline: 0;
+  z-index: 3; pointer-events: none;
+  text-align: center; white-space: nowrap;
+}
+.m-collage__cta {
+  position: absolute; top: 790rem; inset-inline: 0; z-index: 5;
+  text-align: center;
+}
+
+@media (max-width: 960px) {
+  .m-collage__stage { height: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 14rem; }
+  .m-collage__item { position: relative; inset: auto !important; width: 100% !important; height: auto !important; }
+  .m-collage__item .r-media { aspect-ratio: 3/4; }
+  .m-collage__item--c { grid-column: 1 / -1; }
+  .m-collage__item--c .r-media { aspect-ratio: 16/10; }
+  .m-collage__title, .m-collage__cta {
+    position: relative; top: auto; white-space: normal;
+    grid-column: 1 / -1; margin-block: 26rem 0; text-align: start;
+  }
+}
+
+/* ------------------------------------------------------------
+   فریم ۲/۳/۴ — بنر کمپین با عکس اینست
+   عکس عریض تمام‌صفحه + یک عکس کوچک وسط + تیتر روی هر دو
+   ------------------------------------------------------------ */
+.m-campaign { position: relative; overflow: hidden; }
+.m-campaign__bg { position: relative; height: 92svh; min-height: 560rem; }
+.m-campaign__bg .r-media { position: absolute; inset: 0; }
+
+/* عکس کوچک وسطی — با سرعت متفاوت حرکت می‌کند */
+.m-campaign__inset {
+  position: absolute; z-index: 3;
+  top: 50%; left: 50%; translate: -50% -50%;
+  width: 300rem; height: 400rem;
+  will-change: transform;
+}
+.m-campaign__inset .r-media { width: 100%; height: 100%; }
+
+/* تیتر — بین پس‌زمینه و اینست قرار می‌گیرد تا عکس رویش بیفتد */
+.m-campaign__title {
+  position: absolute; z-index: 2; inset-inline: 0;
+  top: 50%; translate: 0 -50%;
+  text-align: center; color: var(--white);
+  pointer-events: none; white-space: nowrap;
+}
+.m-campaign__foot {
+  position: absolute; z-index: 4; bottom: 44rem; inset-inline: 0;
+  display: flex; justify-content: space-between; align-items: flex-end;
+  color: var(--white);
+}
+/* واریانت روشن — برای بنرهای با پس‌زمینه‌ی کرم/زرد */
+.m-campaign--light .m-campaign__title,
+.m-campaign--light .m-campaign__foot { color: var(--black); }
+
+@media (max-width: 960px) {
+  .m-campaign__bg { height: 74svh; min-height: 420rem; }
+  .m-campaign__inset { width: 150rem; height: 200rem; }
+  .m-campaign__title { white-space: normal; padding-inline: 30rem; }
+  .m-campaign__foot { flex-direction: column; align-items: flex-start; gap: 10rem; bottom: 24rem; }
+}
+
+/* ------------------------------------------------------------
+   فوتر
+   ------------------------------------------------------------ */
+.m-footer { background: var(--off-white); padding-block: 96rem 40rem; }
+.m-footer__top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40rem; }
+.m-footer__brand { font-size: 34rem; font-weight: 300; letter-spacing: .2em; }
+.m-footer h4 { font-size: 12rem; letter-spacing: .14em; text-transform: uppercase; color: var(--dark-grey); margin: 0 0 18rem; font-weight: 600; }
+.m-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 11rem; font-size: 14rem; }
+.m-footer__bot {
+  margin-top: 72rem; padding-top: 24rem; border-top: 1px solid var(--light-grey);
+  display: flex; justify-content: space-between; gap: 20rem;
+  font-size: 12rem; color: var(--dark-grey);
+}
+@media (max-width: 960px) {
+  .m-footer__top { grid-template-columns: 1fr 1fr; gap: 34rem; }
+  .m-footer__bot { flex-direction: column; }
+}
